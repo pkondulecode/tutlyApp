@@ -12,8 +12,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  PieChart, 
+  Pie, 
+  Cell 
+} from "recharts"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 const revenueData = [
   { month: "Oct", revenue: 380000 },
@@ -33,7 +45,10 @@ const planDistribution = [
 function ModernStatCard({ title, value, icon: Icon, trend, description }: { title: string, value: string | number, icon: any, trend?: { value: number, label: string }, description?: string }) {
   const isPositive = trend && trend.value >= 0
   return (
-    <Card className="hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border-none shadow-md bg-white rounded-2xl relative overflow-hidden group">
+    <Card 
+      className="hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border-none shadow-md bg-white rounded-2xl relative overflow-hidden group cursor-pointer"
+      onClick={() => toast("Stat Card Clicked", { description: `You clicked on ${title}` })}
+    >
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#725ef1] to-[#7d3ced] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{title}</CardTitle>
@@ -64,6 +79,34 @@ export function SuperAdminDashboard() {
   const totalRevenue = coachingInstitutes.reduce((sum, c) => sum + c.revenue, 0)
   const activeCoaching = coachingInstitutes.filter((c) => c.status === "active").length
 
+  const showDemoAlerts = () => {
+    toast("DEFAULT ALERT: This is a white alert.", { 
+      description: "Information: Data is loading...",
+      duration: 2000 
+    })
+    
+    setTimeout(() => {
+      toast.success("SUCCESS ALERT: Data saved successfully!", {
+        description: "Green alert: Action completed.",
+        duration: 3000
+      })
+    }, 1000)
+
+    setTimeout(() => {
+      toast.warning("VALIDATION ALERT: Please check your input.", {
+        description: "Yellow alert: Some fields are missing.",
+        duration: 4000
+      })
+    }, 2000)
+
+    setTimeout(() => {
+      toast.error("ERROR ALERT: Failed to download report.", {
+        description: "Red alert: System connection lost.",
+        duration: 5000
+      })
+    }, 3000)
+  }
+
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in-50 duration-500 pb-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -72,7 +115,10 @@ export function SuperAdminDashboard() {
           <p className="text-gray-500 font-medium mt-1">Welcome back, Super Admin</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="flex justify-center items-center gap-2 py-2.5 px-6 border border-transparent rounded-xl shadow-lg shadow-[#725ef1]/25 text-sm font-bold text-white bg-gradient-to-r from-[#725ef1] to-[#7d3ced] hover:from-[#634ed1] hover:to-[#6d2ed9] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 tracking-wide">
+          <button 
+            onClick={showDemoAlerts}
+            className="flex justify-center items-center gap-2 py-2.5 px-6 border border-transparent rounded-xl shadow-lg shadow-[#725ef1]/25 text-sm font-bold text-white bg-gradient-to-r from-[#725ef1] to-[#7d3ced] hover:from-[#634ed1] hover:to-[#6d2ed9] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 tracking-wide cursor-pointer"
+          >
             Download Global Report
           </button>
         </div>

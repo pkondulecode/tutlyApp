@@ -63,6 +63,7 @@ const navItems: NavItem[] = [
   { title: "Expenses", href: "/dashboard/expenses", icon: Receipt, roles: ["admin", "accountant"] },
   { title: "Salary", href: "/dashboard/salary", icon: Wallet, roles: ["admin", "accountant"] },
   { title: "Reports", href: "/dashboard/reports", icon: BarChart3, roles: ["admin", "accountant"] },
+  { title: "Institute Settings", href: "/admin/settings/institute", icon: Building2, roles: ["super-admin", "admin"] },
   { title: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["super-admin", "admin"] },
 ]
 
@@ -88,10 +89,10 @@ export function Sidebar() {
       className={cn(
         "fixed left-0 top-0 z-40 h-screen transition-all duration-300 border-r border-gray-200 shadow-sm font-medium",
         "bg-[#f3f4f6]",
+        "hidden lg:flex flex-col",
         collapsed ? "w-20" : "w-[240px]"
       )}
     >
-      <div className="flex h-full flex-col">
         {/* Logo Section */}
         <div className="flex h-20 items-center px-6 mb-2">
           {!collapsed ? (
@@ -144,7 +145,32 @@ export function Sidebar() {
         </nav>
 
         {/* Footer/Toggle Section */}
-        <div className="p-4 mt-auto">
+        <div className="p-4 mt-auto space-y-2">
+          {user.role !== "super-admin" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const superAdmin = {
+                  id: "1",
+                  email: "superadmin@test.com",
+                  name: "Super Admin",
+                  role: "super-admin" as const,
+                  avatar: "SA",
+                }
+                localStorage.setItem("coaching-user", JSON.stringify(superAdmin))
+                window.location.reload()
+              }}
+              className={cn(
+                "w-full h-10 justify-start rounded-xl border-dashed border-[#725ef1]/50 text-[#725ef1] hover:bg-[#725ef1]/10 hover:border-[#725ef1] transition-all font-semibold text-xs",
+                collapsed && "justify-center px-0"
+              )}
+            >
+              <PieChart className="h-4 w-4 shrink-0" />
+              {!collapsed && <span className="ml-2">Super Admin Access</span>}
+            </Button>
+          )}
+          
           <Button
             variant="ghost"
             size="sm"
@@ -162,7 +188,6 @@ export function Sidebar() {
           </Button>
         </div>
 
-      </div>
     </aside>
   )
 }

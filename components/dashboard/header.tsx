@@ -44,26 +44,34 @@ export function Header() {
   if (!user) return null
 
   return (
+
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background px-4 lg:px-6">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" className="lg:hidden">
-            <Menu className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden hover:bg-[#725ef1]/10 text-gray-600 hover:text-[#725ef1] transition-colors"
+          >
+            <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0 bg-sidebar">
+        <SheetContent side="left" className="w-[280px] p-0 border-none shadow-2xl">
           <MobileSidebar onClose={() => setIsOpen(false)} />
         </SheetContent>
       </Sheet>
 
       <div className="flex-1 flex items-center gap-4">
         <div className="relative hidden md:block w-full max-w-sm">
+
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+
           <Input
             placeholder="Search..."
-            className="pl-9 bg-secondary/50 border-0 focus-visible:ring-1"
+            className="pl-9 /50 border-0 focus-visible:ring-1"
           />
+
         </div>
       </div>
 
@@ -98,7 +106,7 @@ export function Header() {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="justify-center text-primary" onClick={() => router.push("/dashboard/notifications")}>
-                View all notifications
+              View all notifications
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -141,6 +149,8 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
     </header>
+
   )
 }

@@ -10,15 +10,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/context/auth-context"
-import { Building2, User, Bell, Shield, Palette, Save } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Camera, Building2, User, Bell, Shield, Palette, Save } from "lucide-react"
+
 
 export default function SettingsPage() {
   const { user } = useAuth()
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [smsNotifications, setSmsNotifications] = useState(false)
   const [pushNotifications, setPushNotifications] = useState(true)
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
   const isSuperAdmin = user?.role === "super-admin"
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -56,12 +70,48 @@ export default function SettingsPage() {
         </TabsList>
 
         <TabsContent value="profile" className="mt-6">
-          <Card>
-            <CardHeader>
+          <Card className="overflow-hidden border-none shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-[#725ef1]/10 to-[#7d3ced]/10 pb-8">
               <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Update your personal details</CardDescription>
+              <CardDescription>Update your personal details and profile picture</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-8 pt-6">
+              {/* Profile Picture Section */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-dashed">
+                <div className="relative group">
+                  <Avatar className="h-24 w-24 border-4 border-background shadow-xl">
+                    <AvatarImage src={profileImage || ""} />
+                    <AvatarFallback className="bg-gradient-to-br from-[#725ef1] to-[#7d3ced] text-white text-2xl font-bold">
+                      {user?.avatar || user?.name?.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <label
+                    htmlFor="avatar-upload"
+                    className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  >
+                    <Camera className="h-8 w-8 text-white" />
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </div>
+                <div className="text-center sm:text-left">
+                  <h4 className="text-lg font-bold text-foreground">{user?.name}</h4>
+                  <p className="text-sm text-muted-foreground mb-3">{user?.role?.replace("-", " ").toUpperCase()}</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-xl border-[#725ef1] text-[#725ef1] hover:bg-[#725ef1] hover:text-white"
+                    onClick={() => document.getElementById('avatar-upload')?.click()}
+                  >
+                    Change Picture
+                  </Button>
+                </div>
+              </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <Field>
                   <FieldLabel>Full Name</FieldLabel>
@@ -91,6 +141,13 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+
+
+
+
+
+
 
         {!isSuperAdmin && (
           <TabsContent value="institute" className="mt-6">
@@ -130,6 +187,16 @@ export default function SettingsPage() {
             </Card>
           </TabsContent>
         )}
+
+
+
+
+
+
+
+
+
+
 
         <TabsContent value="notifications" className="mt-6">
           <Card>
@@ -317,6 +384,7 @@ export default function SettingsPage() {
             </Card>
           </TabsContent>
         )}
+
       </Tabs>
     </div>
   )
