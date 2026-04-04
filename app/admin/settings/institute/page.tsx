@@ -144,15 +144,16 @@ export default function InstituteSettingsPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-8 py-6">
       <div className="flex items-center justify-between">
-        <div>
+
+        {/* <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground/90">
             Institute Settings
           </h1>
           <p className="text-muted-foreground mt-1">
             Configure your coaching institute's global profile and business details.
           </p>
-        </div>
-        <Button
+        </div> */}
+        {/* <Button
           form="institute-form"
           type="submit"
           size="lg"
@@ -170,7 +171,9 @@ export default function InstituteSettingsPage() {
               Save Settings
             </>
           )}
-        </Button>
+        </Button> */}
+
+
       </div>
 
       <form id="institute-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">

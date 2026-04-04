@@ -63,7 +63,7 @@ const navItems: NavItem[] = [
   { title: "Expenses", href: "/dashboard/expenses", icon: Receipt, roles: ["admin", "accountant"] },
   { title: "Salary", href: "/dashboard/salary", icon: Wallet, roles: ["admin", "accountant"] },
   { title: "Reports", href: "/dashboard/reports", icon: BarChart3, roles: ["admin", "accountant"] },
-  { title: "Institute Settings", href: "/admin/settings/institute", icon: Building2, roles: ["super-admin", "admin"] },
+
   { title: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["super-admin", "admin"] },
 ]
 
@@ -93,100 +93,100 @@ export function Sidebar() {
         collapsed ? "w-20" : "w-[240px]"
       )}
     >
-        {/* Logo Section */}
-        <div className="flex h-20 items-center px-6 mb-2">
-          {!collapsed ? (
-            <Link href="/dashboard" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#725ef1] shadow-lg shadow-indigo-100">
-                <GraduationCap className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-bold text-gray-900 text-lg tracking-tight">
-                CoachingHub
-              </span>
-            </Link>
-          ) : (
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#725ef1] mx-auto shadow-md">
+      {/* Logo Section */}
+      <div className="flex h-20 items-center px-6 mb-2">
+        {!collapsed ? (
+          <Link href="/dashboard" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#725ef1] shadow-lg shadow-indigo-100">
               <GraduationCap className="h-5 w-5 text-white" />
             </div>
-          )}
-        </div>
+            <span className="font-bold text-gray-900 text-lg tracking-tight">
+              CoachingHub
+            </span>
+          </Link>
+        ) : (
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#725ef1] mx-auto shadow-md">
+            <GraduationCap className="h-5 w-5 text-white" />
+          </div>
+        )}
+      </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 overflow-y-auto px-4 py-2">
-          <ul className="space-y-1.5">
-            {filteredNavItems.map((item) => {
-              const isActive = pathname === item.href
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200 group",
-                      isActive
-                        ? "bg-[#725ef1]/10 text-[#725ef1]"
-                        : "text-[#6b7280] hover:bg-[#f1f5f9] hover:text-gray-900"
-                    )}
-                  >
-                    <item.icon className={cn(
-                      "h-5 w-5 shrink-0 transition-colors duration-200",
-                      isActive ? "text-[#725ef1]" : "text-[#6b7280] group-hover:text-gray-900"
-                    )} />
-                    {!collapsed && (
-                      <span className="whitespace-nowrap">{item.title}</span>
-                    )}
-                    {isActive && !collapsed && (
-                      <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#725ef1]" />
-                    )}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
+      {/* Navigation Menu */}
+      <nav className="flex-1 overflow-y-auto px-4 py-2">
+        <ul className="space-y-1.5">
+          {filteredNavItems.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition-all duration-200 group",
+                    isActive
+                      ? "bg-[#725ef1]/10 text-[#725ef1]"
+                      : "text-[#6b7280] hover:bg-[#f1f5f9] hover:text-gray-900"
+                  )}
+                >
+                  <item.icon className={cn(
+                    "h-5 w-5 shrink-0 transition-colors duration-200",
+                    isActive ? "text-[#725ef1]" : "text-[#6b7280] group-hover:text-gray-900"
+                  )} />
+                  {!collapsed && (
+                    <span className="whitespace-nowrap">{item.title}</span>
+                  )}
+                  {isActive && !collapsed && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#725ef1]" />
+                  )}
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
 
-        {/* Footer/Toggle Section */}
-        <div className="p-4 mt-auto space-y-2">
-          {user.role !== "super-admin" && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const superAdmin = {
-                  id: "1",
-                  email: "superadmin@test.com",
-                  name: "Super Admin",
-                  role: "super-admin" as const,
-                  avatar: "SA",
-                }
-                localStorage.setItem("coaching-user", JSON.stringify(superAdmin))
-                window.location.reload()
-              }}
-              className={cn(
-                "w-full h-10 justify-start rounded-xl border-dashed border-[#725ef1]/50 text-[#725ef1] hover:bg-[#725ef1]/10 hover:border-[#725ef1] transition-all font-semibold text-xs",
-                collapsed && "justify-center px-0"
-              )}
-            >
-              <PieChart className="h-4 w-4 shrink-0" />
-              {!collapsed && <span className="ml-2">Super Admin Access</span>}
-            </Button>
-          )}
-          
+      {/* Footer/Toggle Section */}
+      <div className="p-4 mt-auto space-y-2">
+        {user.role !== "super-admin" && (
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            onClick={() => setCollapsed(!collapsed)}
-            className="w-full h-11 justify-center rounded-xl text-[#6b7280] hover:bg-[#f1f5f9] hover:text-gray-900 transition-all font-bold tracking-tight"
-          >
-            {collapsed ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <div className="flex items-center gap-2">
-                <ChevronLeft className="h-5 w-5" />
-                <span className="text-xs font-bold uppercase tracking-wider">Collapse Menu</span>
-              </div>
+            onClick={() => {
+              const superAdmin = {
+                id: "1",
+                email: "superadmin@test.com",
+                name: "Super Admin",
+                role: "super-admin" as const,
+                avatar: "SA",
+              }
+              localStorage.setItem("coaching-user", JSON.stringify(superAdmin))
+              window.location.reload()
+            }}
+            className={cn(
+              "w-full h-10 justify-start rounded-xl border-dashed border-[#725ef1]/50 text-[#725ef1] hover:bg-[#725ef1]/10 hover:border-[#725ef1] transition-all font-semibold text-xs",
+              collapsed && "justify-center px-0"
             )}
+          >
+            <PieChart className="h-4 w-4 shrink-0" />
+            {!collapsed && <span className="ml-2">Super Admin Access</span>}
           </Button>
-        </div>
+        )}
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setCollapsed(!collapsed)}
+          className="w-full h-11 justify-center rounded-xl text-[#6b7280] hover:bg-[#f1f5f9] hover:text-gray-900 transition-all font-bold tracking-tight"
+        >
+          {collapsed ? (
+            <ChevronRight className="h-5 w-5" />
+          ) : (
+            <div className="flex items-center gap-2">
+              <ChevronLeft className="h-5 w-5" />
+              <span className="text-xs font-bold uppercase tracking-wider">Collapse Menu</span>
+            </div>
+          )}
+        </Button>
+      </div>
 
     </aside>
   )

@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { useAuth } from "@/context/auth-context"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Camera, Building2, User, Bell, Shield, Palette, Save } from "lucide-react"
+import InstituteSettings from "@/components/dashboard/InstituteSettings"
 
 
 export default function SettingsPage() {
@@ -144,47 +145,11 @@ export default function SettingsPage() {
 
 
 
-
-
-
-
-
         {!isSuperAdmin && (
           <TabsContent value="institute" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Institute Settings</CardTitle>
-                <CardDescription>Manage institute information</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid gap-4 md:grid-cols-2">
-                  <Field>
-                    <FieldLabel>Institute Name</FieldLabel>
-                    <Input defaultValue={user?.coachingName} />
-                  </Field>
-                  <Field>
-                    <FieldLabel>Contact Email</FieldLabel>
-                    <Input type="email" placeholder="contact@institute.com" />
-                  </Field>
-                  <Field>
-                    <FieldLabel>Contact Phone</FieldLabel>
-                    <Input placeholder="Enter contact number" />
-                  </Field>
-                  <Field>
-                    <FieldLabel>Website</FieldLabel>
-                    <Input placeholder="https://www.example.com" />
-                  </Field>
-                </div>
-                <Field>
-                  <FieldLabel>Address</FieldLabel>
-                  <Textarea placeholder="Enter institute address" />
-                </Field>
-                <Button>
-                  <Save className="mr-2 h-4 w-4" />
-                  Save Changes
-                </Button>
-              </CardContent>
-            </Card>
+            <TabsContent value="institute" className="mt-6">
+              <InstituteSettings />
+            </TabsContent>
           </TabsContent>
         )}
 

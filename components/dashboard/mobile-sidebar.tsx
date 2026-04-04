@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   { title: "Subscription Plans", href: "/dashboard/plans", icon: CreditCard, roles: ["super-admin"] },
   { title: "Platform Analytics", href: "/dashboard/analytics", icon: PieChart, roles: ["super-admin"] },
   { title: "Students", href: "/dashboard/students", icon: Users, roles: ["admin", "teacher"] },
-  { title: "Teachers", href: "/dashboard/teachers", icon: GraduationCap, roles: ["admin"] },
+  { title: "Teachers", href: "/dash board/teachers", icon: GraduationCap, roles: ["admin"] },
   { title: "Courses", href: "/dashboard/courses", icon: BookOpen, roles: ["admin"] },
   { title: "Batches", href: "/dashboard/batches", icon: Calendar, roles: ["admin", "teacher"] },
   { title: "Subjects", href: "/dashboard/subjects", icon: BookOpen, roles: ["admin"] },

@@ -4,7 +4,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Building2, Search, Plus, MoreHorizontal, CheckCircle2, XCircle } from "lucide-react"
+import {
+  Building2,
+  Search,
+  Plus,
+  MoreHorizontal,
+  CheckCircle2,
+  XCircle,
+  Pencil,
+  Trash2
+} from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -13,12 +31,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
   DialogFooter
 } from "@/components/ui/dialog"
@@ -40,8 +58,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { toast } from "sonner"
+import Link from "next/link"
+
+
 
 const formSchema = z.object({
   name: z.string().min(2, "Institute name must be at least 2 characters"),
@@ -52,17 +73,41 @@ const formSchema = z.object({
   address: z.string().min(5, "Address must be at least 5 characters"),
 })
 
-const initialInstitutes = [
-  { id: 1, name: "Excel Academy", email: "contact@excelacademy.com", phone: "+91 9876543210", status: "active", plan: "Pro", students: 450, joinedDate: "2024-01-15" },
-  { id: 2, name: "Pioneer Classes", email: "info@pioneer.edu", phone: "+91 8765432109", status: "active", plan: "Basic", students: 120, joinedDate: "2024-02-10" },
-  { id: 3, name: "Quantum Prep", email: "support@quantum.in", phone: "+91 7654321098", status: "inactive", plan: "Free", students: 45, joinedDate: "2024-03-05" },
-  { id: 4, name: "Apex Coaching", email: "hello@apexcoaching.com", phone: "+91 6543210987", status: "active", plan: "Enterprise", students: 1250, joinedDate: "2023-11-20" },
-  { id: 5, name: "Bright Minds", email: "info@brightminds.co.in", phone: "+91 9988776655", status: "active", plan: "Pro", students: 300, joinedDate: "2024-01-28" },
-]
+const initialInstitutes = []
 
 export default function InstitutesPage() {
-  const [institutes, setInstitutes] = useState(initialInstitutes)
+  const [institutes, setInstitutes] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+
+
+  const fetchInstitutes = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch("http://raghuvatsal-001-site1.anytempurl.com/api/Institute/DG_M_INSTITUTE")
+
+      if (!response.ok) throw new Error("Failed to fetch institutes")
+
+      const result = await response.json()
+
+      const data = result?.data?.Table || []
+
+      setInstitutes(data)
+
+    } catch (error) {
+      console.error("Error fetching institutes:", error)
+      toast.error("Could not load institutes")
+    } finally {
+      setLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchInstitutes()
+  }, [])
+
+
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,18 +121,19 @@ export default function InstitutesPage() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Preserving the existing add logic, ideally this would call an API
     const newInstitute = {
-      id: institutes.length + 1,
-      name: values.name,
-      email: values.email,
-      phone: values.phone,
-      status: "active" as const,
-      plan: values.plan,
-      students: 0,
-      joinedDate: new Date().toISOString().split('T')[0],
+      id: Math.random(),
+      institutE_NAME: values.name,
+      emaiL_ID: values.email,
+      contacT_NO: values.phone,
+      iS_ACTIVE: true,
+      plan: values.plan, // Temporary map
+      capacity: 0,
+      joinedDate: new Date().toISOString(),
     }
-    
+
     setInstitutes([newInstitute, ...institutes])
     setIsDialogOpen(false)
     form.reset()
@@ -101,14 +147,19 @@ export default function InstitutesPage() {
           <h1 className="text-3xl font-bold text-foreground tracking-tight">Coaching Institutes</h1>
           <p className="text-muted-foreground">Manage and monitor all registered coaching institutes.</p>
         </div>
-        
+
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
+
+          {/* <DialogTrigger asChild>
             <Button className="bg-[#725ef1] hover:bg-[#634ed1] text-white shadow-lg shadow-indigo-100 transition-all active:scale-95">
               <Plus className="mr-2 h-4 w-4" />
               Add Institute
             </Button>
-          </DialogTrigger>
+          </DialogTrigger> */}
+
+
+
+
           <DialogContent className="sm:max-w-[550px] rounded-2xl p-0 overflow-hidden border-none shadow-2xl">
             <DialogHeader className="p-6 bg-gradient-to-r from-[#725ef1] to-[#7d3ced] text-white">
               <DialogTitle className="text-2xl font-bold">Register New Institute</DialogTitle>
@@ -116,6 +167,9 @@ export default function InstitutesPage() {
                 Setup a new coaching institute on the platform.
               </DialogDescription>
             </DialogHeader>
+
+
+
             <div className="p-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
@@ -216,16 +270,16 @@ export default function InstitutesPage() {
                   />
 
                   <DialogFooter className="pt-4">
-                    <Button 
-                      type="button" 
-                      variant="ghost" 
+                    <Button
+                      type="button"
+                      variant="ghost"
                       onClick={() => setIsDialogOpen(false)}
                       className="rounded-xl hover:bg-gray-100"
                     >
                       Cancel
                     </Button>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="bg-[#725ef1] hover:bg-[#634ed1] text-white rounded-xl shadow-lg shadow-indigo-100 px-8"
                     >
                       Create Institute
@@ -234,8 +288,16 @@ export default function InstitutesPage() {
                 </form>
               </Form>
             </div>
+
+
+
           </DialogContent>
+
+
+
         </Dialog>
+
+
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -245,27 +307,31 @@ export default function InstitutesPage() {
             <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{institutes.length}</div>
+            <div className="text-2xl font-bold">{Array.isArray(institutes) ? institutes.length : 0}</div>
             <p className="text-xs text-muted-foreground mt-1">+2 this month</p>
           </CardContent>
         </Card>
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Active Institutes</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-success" />
+            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{institutes.filter(i => i.status === 'active').length}</div>
+            <div className="text-2xl font-bold">
+              {Array.isArray(institutes) ? institutes.filter(i => i.iS_ACTIVE === true).length : 0}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Currently operating</p>
           </CardContent>
         </Card>
         <Card className="hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Inactive</CardTitle>
-            <XCircle className="h-4 w-4 text-destructive" />
+            <XCircle className="h-4 w-4 text-rose-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{institutes.filter(i => i.status === 'inactive').length}</div>
+            <div className="text-2xl font-bold">
+              {Array.isArray(institutes) ? institutes.filter(i => i.iS_ACTIVE === false).length : 0}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">Require attention</p>
           </CardContent>
         </Card>
@@ -290,64 +356,117 @@ export default function InstitutesPage() {
               <TableRow>
                 <TableHead>Institute Name</TableHead>
                 <TableHead>Contact</TableHead>
-                <TableHead>Plan</TableHead>
+                <TableHead>Address</TableHead>
                 <TableHead>Students</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {institutes.map((institute) => (
-                <TableRow key={institute.id} className="hover:bg-muted/50 transition-colors">
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-md bg-primary/10 flex items-center justify-center text-primary font-bold">
-                        {institute.name.charAt(0)}
-                      </div>
-                      <div>
-                        {institute.name}
-                        <div className="text-xs text-muted-foreground font-normal">Joined {institute.joinedDate}</div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">{institute.email}</div>
-                    <div className="text-xs text-muted-foreground">{institute.phone}</div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={
-                      institute.plan === 'Enterprise' ? 'bg-primary/10 text-primary border-primary/20' :
-                      institute.plan === 'Pro' ? 'bg-chart-2/10 text-chart-2 border-chart-2/20' : 'bg-muted text-muted-foreground border-border'
-                    }>
-                      {institute.plan}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {institute.students.toLocaleString()}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={institute.status === "active" ? "default" : "secondary"} className={institute.status === 'active' ? 'bg-success/15 hover:bg-success/25 text-success border-success/20' : 'bg-destructive/15 text-destructive hover:bg-destructive/25 border-destructive/20'}>
-                      {institute.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><div className="h-10 w-40 animate-pulse bg-muted rounded-md" /></TableCell>
+                    <TableCell><div className="h-10 w-24 animate-pulse bg-muted rounded-md" /></TableCell>
+                    <TableCell><div className="h-6 w-16 animate-pulse bg-muted rounded-md" /></TableCell>
+                    <TableCell><div className="h-6 w-10 animate-pulse bg-muted rounded-md" /></TableCell>
+                    <TableCell><div className="h-6 w-16 animate-pulse bg-muted rounded-md" /></TableCell>
+                    <TableCell><div className="h-8 w-8 animate-pulse bg-muted rounded-full ml-auto" /></TableCell>
+                  </TableRow>
+                ))
+              ) : institutes.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-32 text-center text-muted-foreground font-medium">
+                    No institutes found.
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                institutes.map((institute) => (
+                  <TableRow key={institute.id || institute.institutE_SRNO} className="hover:bg-muted/50 transition-colors">
+
+
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-md bg-[#725ef1]/10 flex items-center justify-center text-[#725ef1] font-bold">
+                          {institute.institutE_NAME?.charAt(0) || "I"}
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900">{institute.INSTITUTE_NAME}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+                            Joined {new Date(institute.CREATED_AT || Date.now()).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="text-sm font-medium text-gray-700">{institute.EMAIL_ID}</div>
+                      <div className="text-xs text-muted-foreground font-medium">{institute.CONTACT_NO}</div>
+                    </TableCell>
+
+                    <TableCell>
+                      <Badge variant="outline" className="bg-[#725ef1]/5 text-[#725ef1] border-[#725ef1]/10 font-bold px-3 py-0.5">
+                        {institute.INSTITUTE_TYPE || "-"}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell className="text-gray-900 font-bold">
+                      {(institute.CAPACITY || 0).toLocaleString()}
+                    </TableCell>
+
+                    <TableCell>
+                      <Badge variant="outline" className="bg-[#725ef1]/5 text-[#725ef1] border-[#725ef1]/10 font-bold px-3 py-0.5">
+                        {institute.iS_ACTIVE ? "ACTIVE" : "INACTIVE"}
+                      </Badge>
+                    </TableCell>
+
+
+
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="hover:bg-[#725ef1]/5 hover:text-[#725ef1] rounded-full">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Open menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-[160px] rounded-xl shadow-xl border-muted/20">
+                          <DropdownMenuLabel className="text-xs uppercase tracking-wider text-muted-foreground font-bold">Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+
+                          <Link href="/admin/settings/institute">
+                            <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-[#725ef1]/10 focus:text-[#725ef1] py-2">
+                              <Pencil className="h-4 w-4" />
+                              <span>Edit</span>
+                            </DropdownMenuItem>
+                          </Link>
+                          <DropdownMenuSeparator />
+
+                          <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-red-50 focus:text-red-600 text-red-600 py-2">
+                            <Trash2 className="h-4 w-4" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+
+
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>
         <CardFooter className="p-4 border-t text-sm text-muted-foreground flex justify-between bg-muted/20 items-center">
-          <span>Showing 5 of 24 institutes</span>
+          <span>Showing {institutes.length} institutes</span>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" disabled>Previous</Button>
-            <Button variant="outline" size="sm">Next</Button>
+            <Button variant="outline" size="sm" className="rounded-xl" disabled>Previous</Button>
+            <Button variant="outline" size="sm" className="rounded-xl">Next</Button>
           </div>
         </CardFooter>
       </Card>
+
+
     </div>
   )
 }
